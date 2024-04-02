@@ -1,0 +1,43 @@
+import numpy as np
+import pandas as pd
+from datetime import datetime, timedelta
+from astropy.time import Time
+from astropy.coordinates import get_sun, get_body_barycentric, solar_system_ephemeris
+
+# Define the time range (5.2 years)
+start_date = datetime(2023, 1, 1)
+end_date = start_date + timedelta(days=5.2 * 365)
+
+# Calculate the number of data points
+num_positions = 3200
+delta_days = (end_date - start_date).days / num_positions
+
+# Create an empty list to store the positions
+jupiter_positions = []
+
+# Loop through time and calculate Jupiter's positions
+for i in range(num_positions):
+    current_time = start_date + timedelta(days=i * delta_days)
+    t = Time(current_time)
+
+    with solar_system_ephemeris.set('builtin'):
+        sun_position = get_sun(t)
+        jupiter_position = get_body_barycentric('jupiter', t)
+
+    jupiter_positions.append(jupiter_position)
+
+# Convert the positions to numpy arrays
+x_values = np.array([pos.x.value for pos in jupiter_positions])
+y_values = np.array([pos.y.value for pos in jupiter_positions])
+z_values = np.array([pos.z.value for pos in jupiter_positions])
+
+# Create a pandas DataFrame to store the coordinates
+data = pd.DataFrame({'X': x_values, 'Y': y_values, 'Z': z_values})
+
+# Save the DataFrame to a CSV file
+data.to_csv('jupiter_positions.csv', index=False)
+
+# Print the positions
+for i, position in enumerate(jupiter_positions):
+    x, y, z = position.xyz.to_value(unit="km")
+    print(f"Time {i + 1}: X = {x:.2f} km, Y = {y:.2f} km, Z = {z:.2f} km")

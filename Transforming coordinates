@@ -1,0 +1,34 @@
+import numpy as np
+import pandas as pd
+
+# Function to convert Cartesian coordinates to spherical coordinates
+def cartesian_to_spherical(coordinates):
+    r_values = np.linalg.norm(coordinates, axis=1)  # Calculate radial distance
+    theta_values = np.arccos(coordinates[:, 2] / r_values)  # Inclination angle (polar angle)
+    phi_values = np.arctan2(coordinates[:, 1], coordinates[:, 0])  # Azimuthal angle
+    return r_values, theta_values, phi_values
+
+# Function to convert spherical coordinates to RA and Dec
+def spherical_to_radec(theta_values, phi_values):
+    # Assuming theta corresponds to Dec and phi corresponds to RA
+    dec_values = np.degrees(theta_values) - 90  # Adjust for Dec convention
+    ra_values = np.degrees(phi_values)  # Convert to degrees
+    return ra_values, dec_values
+
+# Load data from the CSV file
+data = pd.read_csv('/content/jupiter_positions.csv')
+
+# Extract Cartesian coordinates from the loaded data
+coordinates_list = data[['X', 'Y', 'Z']].values
+
+# Convert Cartesian to spherical coordinates
+r_values, theta_values, phi_values = cartesian_to_spherical(coordinates_list)
+
+# Convert spherical coordinates to RA and Dec
+ra_values, dec_values = spherical_to_radec(theta_values, phi_values)
+
+# Create a DataFrame with RA, Dec, and Distance columns
+result_df = pd.DataFrame({'RA': ra_values, 'Dec': dec_values, 'Distance': r_values})
+
+# Save the DataFrame to a CSV file
+result_df.to_csv('converted_coordinates.csv', index=False)

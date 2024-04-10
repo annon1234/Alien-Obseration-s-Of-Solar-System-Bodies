@@ -9,7 +9,7 @@ start_date = datetime(2023, 1, 1)
 end_date = start_date + timedelta(days=5.2 * 365)
 
 # Calculate the number of data points
-num_positions = 3200
+num_positions = 3192
 delta_days = (end_date - start_date).days / num_positions
 
 # Create an empty list to store the positions

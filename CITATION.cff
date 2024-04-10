@@ -1,0 +1,26 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Aliens observations of solar system bodies
+message: square search/querying gaia
+type: software
+authors:
+  - given-names: Francesca
+    family-names: Lorusso
+    email: francesca.lorusso2@mail.dcu.ie
+  - given-names: Oisin
+    family-names: Creaner
+    email: oisin.creaner@dcu.ie
+repository-code: >-
+  https://github.com/annon1234/Alien-Obseration-s-Of-Solar-System-Bodies
+url: >-
+  https://github.com/annon1234/Alien-Obseration-s-Of-Solar-System-Bodies
+keywords:
+  - Gaia
+  - square search
+  - Jupiter
+license: MIT
+commit: Gaia square search
+version: '1'
+date-released: '2024-04-10'

@@ -1,0 +1,39 @@
+# Execute the code to obtain the output data
+import pandas as pd
+from astroquery.gaia import Gaia
+import astropy.units as u
+from astropy.coordinates import SkyCoord
+
+# Read the coordinates from the CSV file
+data = pd.read_csv('/content/converted_coordinates.csv')
+
+# Define the columns to retrieve
+columns = "solution_id, designation, ra, dec, phot_g_mean_mag, distance"
+
+# Create an empty list to store the output data
+output_data = []
+
+# Loop over each row in the CSV file
+for index, row in data.iterrows():
+    # Extract RA, Dec, and distance from the current row
+    ra = row['RA']
+    dec = row['Dec']
+    d = row['Distance']  # Assuming the distance is in the same unit as the coordinate
+
+    # Define the search area around the current coordinates
+    coord = SkyCoord(ra=ra, dec=dec, distance=d, unit=(u.degree, u.degree, u.pc), frame='icrs')
+    width = u.Quantity(0.1, u.deg)
+    height = u.Quantity(0.1, u.deg)
+
+    # Query Gaia for stars within the specified area
+    Gaia.ROW_LIMIT = -1
+    r = Gaia.query_object_async(coordinate=coord, width=width, height=height)
+    
+    # Append the results to the output data list
+    output_data.append(r.to_pandas())
+
+# Concatenate all DataFrames in the output data list into a single DataFrame
+final_df = pd.concat(output_data)
+
+# Save the DataFrame to a CSV file
+final_df.to_csv('/content/gaia_output.csv', index=False)
